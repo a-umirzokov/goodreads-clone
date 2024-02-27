@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}
+    Home page
+{% endblock %}
+{% block content %}
+    <h3>All reviews</h3>
+    <div class="container posts-content">
+    <div class="row">
+        <div class="col-lg-6">
+            {% for review in page_obj %}
+            	<div class="card mb-4">
+              <div class="card-body">
+                <div class="media mb-3">
+                  <img src="{{ review.user.profile_picture.url }}" class="d-block ui-w-40 rounded-circle" alt="">
+                  <div class="media-body ml-3">
+                      <b>{{ review.user.username }}</b> rated this book {{ review.stars_given }} stars
+                    <div class="text-muted small">{{ review.created_at | date:"M d, Y" }}</div>
+                  </div>
+                </div>
+            
+                <p>
+                    {{ review.comment|truncatechars:250 }}
+                </p>
+                <a href="{% url 'books:detail' review.book.id %}" class="ui-rect ui-bg-cover" style="background-image: url({{ review.book.image.url }});"></a>
+              </div>
+{#              <div class="card-footer">#}
+{#                <a href="javascript:void(0)" class="d-inline-block text-muted">#}
+{#                    <strong>123</strong> <small class="align-middle">Likes</small>#}
+{#                </a>#}
+{#                <a href="javascript:void(0)" class="d-inline-block text-muted ml-3">#}
+{#                    <strong>12</strong> <small class="align-middle">Comments</small>#}
+{#                </a>#}
+{#                <a href="javascript:void(0)" class="d-inline-block text-muted ml-3">#}
+{#                  <small class="align-middle">Repost</small>#}
+{#                </a>#}
+{#              </div>#}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination">
+          {% if page_obj.has_previous %}
+              <li class="page-item"><a class="page-link" href="{% url 'books:home' %}?page=1">First</a></li>
+            <li class="page-item">
+                <a class="page-link" href="{% url 'books:home' %}?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+          {% endif %}
+        <li class="page-item"><a class="page-link" href="">{{ page_obj.number }}</a></li>
+          {% if page_obj.has_next %}
+            <li class="page-item">
+                  <a class="page-link" href="{% url 'books:home' %}?page={{ page_obj.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+            </li>
+              <li class="page-item"><a class="page-link" href="{% url 'books:home' %}?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+          {% endif %}
+      </ul>
+    </nav>
+</div>    
+{% endblock %}
